@@ -1,23 +1,31 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+class QuizzesRepository {
+    private prisma = new PrismaClient();
 
-export const quizzesRepository = {
-    findAll() {
-        return prisma.quiz.findMany({
+    public findAll() {
+        return this.prisma.quiz.findMany({
             include: { questions: true },
         });
-    },
+    }
 
-    findById(id: number) {
-        return prisma.quiz.findUnique({
+    public findById(id: number) {
+        return this.prisma.quiz.findUnique({
             where: { id },
             include: { questions: true },
         });
-    },
+    }
 
-    create(data: { title: string; questions: { text: string; type: string; options?: string; answer?: string }[] }) {
-        return prisma.quiz.create({
+    public create(data: {
+        title: string;
+        questions: {
+            text: string;
+            type: string;
+            options?: string;
+            answer?: string;
+        }[];
+    }) {
+        return this.prisma.quiz.create({
             data: {
                 title: data.title,
                 questions: {
@@ -26,9 +34,11 @@ export const quizzesRepository = {
             },
             include: { questions: true },
         });
-    },
+    }
 
-    delete(id: number) {
-        return prisma.quiz.delete({ where: { id } });
-    },
-};
+    public delete(id: number) {
+        return this.prisma.quiz.delete({ where: { id } });
+    }
+}
+
+export const quizzesRepository = new QuizzesRepository();

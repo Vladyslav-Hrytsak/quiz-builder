@@ -1,7 +1,7 @@
 import { quizzesRepository } from './quizzes.repositoty';
 
-export const quizzesService = {
-    async getAll() {
+class QuizzesService {
+    public async getAll() {
         const quizzes = await quizzesRepository.findAll();
         return quizzes.map((q) => ({
             id: q.id,
@@ -9,9 +9,9 @@ export const quizzesService = {
             createdAt: q.createdAt,
             questionCount: q.questions.length,
         }));
-    },
+    }
 
-    async getById(id: number) {
+    public async getById(id: number) {
         const quiz = await quizzesRepository.findById(id);
         if (!quiz) return null;
         return {
@@ -21,9 +21,9 @@ export const quizzesService = {
                 options: q.options ? JSON.parse(q.options) : null,
             })),
         };
-    },
+    }
 
-    async create(data: any) {
+    public async create(data: any) {
         const prepared = {
             title: data.title,
             questions: data.questions.map((q: any) => ({
@@ -34,9 +34,11 @@ export const quizzesService = {
             })),
         };
         return quizzesRepository.create(prepared);
-    },
+    }
 
-    async delete(id: number) {
+    public async delete(id: number) {
         return quizzesRepository.delete(id);
-    },
-};
+    }
+}
+
+export const quizzesService = new QuizzesService();

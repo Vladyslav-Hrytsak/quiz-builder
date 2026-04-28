@@ -1,25 +1,47 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { quizzesService } from './quizzes.service';
+import { ApiError } from '../errors/ApiError';
 
-export const quizzesController = {
-    async getAll(req: Request, res: Response) {
-        const quizzes = await quizzesService.getAll();
-        res.json(quizzes);
-    },
+class QuizzesController {
+    public async getAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            const quizzes = await quizzesService.getAll();
+            res.json(quizzes);
+        } catch (e) {
+            next(e);
+        }
+    }
 
-    async getById(req: Request, res: Response) {
-        const quiz = await quizzesService.getById(Number(req.params.id));
-        if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
-        res.json(quiz);
-    },
+    public async getById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const quiz = await quizzesService.getById(Number(req.params.id));
+            if (!quiz) return next(ApiError.notFound('Quiz not found'));
+            res.json(quiz);
+        } catch (e) {
+            next(e);
+        }
+    }
 
-    async create(req: Request, res: Response) {
-        const quiz = await quizzesService.create(req.body);
-        res.status(201).json(quiz);
-    },
+    public async create(req: Request, res: Response, next: NextFunction) {
+        try {
+            const quiz = await quizzesService.create(req.body);
+            res.status(201).json(quiz);
+        } catch (e) {
+            next(e);
+        }
+    }
 
-    async delete(req: Request, res: Response) {
-        await quizzesService.delete(Number(req.params.id));
-        res.status(204).send();
-    },
-};
+    public async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = Number(req.params.id);
+            const existing = await quizzesService.getById(id);
+            if (!existing) return next(ApiError.notFound('Quiz not found'));
+            await quizzesService.delete(id);
+            res.status(204).send();
+        } catch (e) {
+            next(e);
+        }
+    }
+}
+
+export const quizzesController = new QuizzesController();
