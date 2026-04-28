@@ -6,6 +6,18 @@ import { createQuizSchema } from '../validator/quiz.validator';
 export const quizzesRouter = Router();
 
 quizzesRouter.get('/', quizzesController.getAll);
-quizzesRouter.get('/:id', commonMiddleware.isIdValid('id'), quizzesController.getById);
-quizzesRouter.post('/', commonMiddleware.isBodyValid(createQuizSchema), quizzesController.create);
-quizzesRouter.delete('/:id', commonMiddleware.isIdValid('id'), quizzesController.delete);
+quizzesRouter.get(
+  '/:id',
+  commonMiddleware.isIdValid('id'),
+  quizzesController.getById,
+);
+quizzesRouter.post(
+  '/',
+  commonMiddleware.isBodyValid(createQuizSchema),
+  quizzesController.create,
+);
+quizzesRouter.delete(
+  '/:id',
+  commonMiddleware.isIdValid('id'),
+  quizzesController.delete,
+);

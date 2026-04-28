@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "esModuleInterop": true,
     "module": "commonjs",
     "declaration": true,
@@ -14,9 +15,9 @@
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": false,
   }
 }

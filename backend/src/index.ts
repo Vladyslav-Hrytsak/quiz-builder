@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { quizzesRouter } from './quizzes/quizzes.router';
 import { errorMiddleware } from './middleware/error.middleware';
 import { loggerMiddleware } from './middleware/logger.middleware';
+import { prisma } from './prisma/prisma.service';
 
 dotenv.config();
 
@@ -18,6 +19,14 @@ app.use('/quizzes', quizzesRouter);
 
 app.use(errorMiddleware.handle);
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  server.close(() => {
+    console.log('Server process terminated');
+    process.exit(0);
+  });
 });
